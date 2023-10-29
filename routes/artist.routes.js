@@ -1,9 +1,10 @@
-
-
-const express = require("express");
-const router = express.Router();
-const artistController = require("../controllers/artist.controller");
-
-router.get("/", artistController.findAllArtists);
-
-module.exports = router;
+module.exports = app => {
+    var artists= require("../controllers/artist.controller.js");
+  
+    var router = require("express").Router();
+  
+    router.get('/artists',artists.findAllArtists);
+  
+    app.use('/api', router);
+  } 
+  
