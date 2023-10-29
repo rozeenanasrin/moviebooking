@@ -1,12 +1,15 @@
+const dbConfig = require("../config/db.config.js");
 
-const Artist = require("./artist.model");
-const Genre = require("./genre.model");
-const Movie = require("./movie.model");
-const User = require("./user.model");
+const mongoose = require("mongoose");
 
-module.exports = {
-  Artist,
-  Genre,
-  Movie,
-  User,
-};
+const db = {};
+db.mongoose = mongoose;
+db.url = dbConfig.url;
+
+db.artists = require("./artist.model.js")(mongoose);
+db.genres = require("./genre.model.js")(mongoose);
+db.movies = require("./movie.model.js")(mongoose);
+db.users = require("./user.model.js")(mongoose);
+
+
+module.exports = db;
