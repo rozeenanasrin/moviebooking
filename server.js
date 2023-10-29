@@ -1,66 +1,56 @@
-/*const http = require('http');
 const express = require("express");
+const db = require("./models");
+fs = require("fs"),
+path = require("path"),
+cors = require("cors");  
+
+
 const app = express();
-const db = require("./models"); // Make sure the path is correct
 
-const mongoose = require("mongoose");
+bodyParser = require("body-parser");
 
 
-const server = http.createServer((req, res) => {
-  if (req.url === '/movies') {
-    res.writeHead(200, { 'Content-Type': 'application/json' });
-    res.end('All Movies Data in JSON format from Mongo DB');
-  } else if (req.url === '/genres') {
-    res.writeHead(200, { 'Content-Type': 'application/json' });
-    res.end('All Genres Data in JSON format from Mongo DB');
-  } else if (req.url === '/artists') {
-    res.writeHead(200, { 'Content-Type': 'application/json' });
-    res.end('All Artists Data in JSON format from Mongo DB');
-  } else {
-    res.writeHead(404, { 'Content-Type': 'text/plain' });
-    res.end('Not Found');
-  }
-});
 
-mongoose
-  .connect(db.mongoURI, {
+db.mongoose
+  .connect(db.url, {
     useNewUrlParser: true,
-    useUnifiedTopology: true,
+    useUnifiedTopology: true
   })
   .then(() => {
     console.log("Connected to the database!");
-    // Start your Express server here if desired
+    
   })
-  .catch((err) => {
+  .catch(err => {
     console.log("Cannot connect to the database!", err);
     process.exit();
   });
 
-// Additional server setup and routes can go here
+
+// app.get("/movies", (req, res) => {
+//     res.send("All Movies Data in JSON format from Mongo DB");
+// })
+// app.get("/genres", (req, res) => {
+//     res.send("All Genres Data in JSON format from Mongo DB");
+// })
+// app.get("/artists", (req, res) => {
+//     res.send("All Artists Data in JSON format from Mongo DB");
+// })
 
 
-const port = 9000;
 
-server.listen(port, () => {
-  console.log(`Server is running on http://localhost:${port}`);
-});
-*/
-const express = require("express");
-const cors = require("cors");
-const app = express();
+require("./routes/movie.routes")(app);
+require("./routes/artist.routes")(app);
+require("./routes/genre.routes")(app);
+require("./routes/user.routes")(app)
 
-// Use the cors middleware to allow cross-origin requests
-app.use(cors());
+app.listen(9000, () => {
+    console.log("Listening on port 9000");
+})
 
-app.get("/", (req, res) => {
-  res.json({ message: "Welcome to Upgrad Movie booking application development." });
-});
 
-const PORT = process.env.PORT || 3000; // Define the port or use the default port 3000
+const getAllUsers = async() => {
+    const users = await db.users.find({});
+    console.log(users);
+}
 
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
-
-// Start defining your routes and logic for the application here.
-
+getAllUsers();
