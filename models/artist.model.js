@@ -14,3 +14,4 @@ const Artist = mongoose.model(
 );
 
 module.exports = Artist;
+
