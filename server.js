@@ -1,4 +1,4 @@
-const http = require('http');
+/*const http = require('http');
 const express = require("express");
 const app = express();
 const db = require("./models"); // Make sure the path is correct
@@ -44,4 +44,23 @@ const port = 9000;
 server.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });
+*/
+const express = require("express");
+const cors = require("cors");
+const app = express();
+
+// Use the cors middleware to allow cross-origin requests
+app.use(cors());
+
+app.get("/", (req, res) => {
+  res.json({ message: "Welcome to Upgrad Movie booking application development." });
+});
+
+const PORT = process.env.PORT || 3000; // Define the port or use the default port 3000
+
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});
+
+// Start defining your routes and logic for the application here.
 
