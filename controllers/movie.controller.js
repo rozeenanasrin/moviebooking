@@ -1,38 +1,69 @@
+var express = require('express');
+const db = require("../models");
+const Movie = db.movies;
 
-const Movie = require('../models/Movie'); 
+async function findAllMovies(req,res){
 
-exports.findAllMovies = async (req, res) => {
-  try {
-    const { status } = req.query;
-    
-    const movies = await Movie.find({ status }); // Adjust the query as needed
-    res.json(movies);
-  } catch (error) {
-    res.status(500).json({ error: 'Error fetching movies' });
-  }
-};
+    /**
+     * status --> RESLESED // Published
+     * 
+     * status.toLowerCase(): true
+     * 
+     * Multiple query Paramenter
+     */
+    try{
+    let status= await req.query.status;
+    console.log(status);
+    let condition = {}
+    if(status){
 
-
-exports.findOne = async (req, res) => {
-  try {
-    const { movieId } = req.params;
-        const movie = await Movie.findById(movieId); 
-    if (!movie) {
-      res.status(404).json({ error: 'Movie not found' });
-    } else {
-      res.json(movie);
+        status = status.toLowerCase();
+        condition[status]=true
     }
-  } catch (error) {
-    res.status(500).json({ error: 'Error fetching movie' });
-  }
-};
+    console.log(status);
 
-// Find shows of a specific movie by its ID
-exports.findShows = async (req, res) => {
-  try {
-    const { movieId } = req.params;
-        res.json({ message: `Get shows for movie with ID ${movieId}` });
-  } catch (error) {
-    res.status(500).json({ error: 'Error fetching shows' });
-  }
-};
+    console.log(condition);
+    const data= await db.movies.find(condition);
+    console.log(data);
+    res.json(data);
+    }
+    catch(err) {
+        res.status(500).send({
+          message:
+            err.message || "Some error occurred while retrieving Movie data."
+        });
+      }
+
+}
+
+async function findOne(req,res){
+    const id = req.params.movieId;
+    const data =await db.movies.find({"movieid": id});
+    console.log(id);
+    console.log(data);
+    if(!data){
+        res.status(404).send({ message: "Not found movie with id " + id });
+    }
+    res.json(data);
+
+}
+
+async function findShows(req,res){
+
+    const id=req.params.movieId;
+    const show=await db.movies.findById(id).shows;
+
+    if(!show  || shows.length === 0){
+        res.status(404).send({ message: "Not found shows with id " + id });
+    }
+    else{
+        res.json(show);
+    }
+
+}
+
+module.exports={
+    findAllMovies,
+    findOne,
+    findShows
+} 
