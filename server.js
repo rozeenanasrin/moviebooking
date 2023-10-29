@@ -1,4 +1,10 @@
 const http = require('http');
+const express = require("express");
+const app = express();
+const db = require("./models"); // Make sure the path is correct
+
+const mongoose = require("mongoose");
+
 
 const server = http.createServer((req, res) => {
   if (req.url === '/movies') {
@@ -15,6 +21,23 @@ const server = http.createServer((req, res) => {
     res.end('Not Found');
   }
 });
+
+mongoose
+  .connect(db.mongoURI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .then(() => {
+    console.log("Connected to the database!");
+    // Start your Express server here if desired
+  })
+  .catch((err) => {
+    console.log("Cannot connect to the database!", err);
+    process.exit();
+  });
+
+// Additional server setup and routes can go here
+
 
 const port = 9000;
 
